@@ -11,13 +11,11 @@ function getRandomInt(max) {
 
 function picUrl(num) {
   const base = `https://tutorial90005123.s3.us-east-2.amazonaws.com/thailandPics/tripadvisor_thailand_${num}.jpg`;
-
   return base;
 }
 
 function randSubcategory() {
   const options = ['Tours & Sightseeing', 'Private & Custom Tours', 'Outdoor Adventures'];
-
   return options[Math.ceil(Math.random() * 3) - 1];
 }
 

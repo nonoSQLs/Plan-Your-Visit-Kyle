@@ -24,7 +24,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    axios.get('http://54.189.97.228:8080/api/recommended')
+    axios.get('/api/recommended')
       .then((results) => {
         const topSix = results.data.slice(0, 6);
         this.setState({
@@ -35,7 +35,7 @@ class App extends Component {
   }
 
   updateLiked(elementId, liked) {
-    return axios.put(`http://54.189.97.228:8080/api/recommended/${elementId}`, { liked });
+    return axios.put(`/api/recommended/${elementId}`, { liked });
   }
 
   viewSwitcher(event) {
@@ -44,7 +44,7 @@ class App extends Component {
     if (str === '1') {
       this.componentDidMount();
     } else {
-      axios.get(`http://54.189.97.228:8080/api/recommended/hello/${str}`)
+      axios.get(`/api/recommended/hello/${str}`)
         .then((results) => {
           const topFour = results.data.slice(0, 6);
           while (topFour.length < 6) {
