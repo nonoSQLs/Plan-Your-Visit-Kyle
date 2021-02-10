@@ -89,10 +89,8 @@ app.get('/api/recommended/hello/:num', (req, res) => {
 
 app.put('/api/recommended/:id', (req, res) => {
   const { id } = req.params;
-  console.log(id);
   client.query(`UPDATE adventures SET liked=not liked WHERE adventure_id=${id}`, (err, response) => {
     if (err) {
-      console.log(err);
       res.status(400).send(err);
     } else {
       res.status(200).send(response.rows);

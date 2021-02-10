@@ -133,6 +133,7 @@ class Adventure extends Component {
     const { adventure } = this.props;
     // const { _id } = adventure;
     const { liked } = this.state;
+    // eslint-disable-next-line react/prop-types
     updateLiked(adventure.adventure_id, liked)
       .then((response) => {
         this.setState({
