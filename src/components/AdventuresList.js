@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid';
 
 import Adventure from './Adventure';
 
-// import '../styles/style.css';
+import '../styles/style.css';
 
 function AdventuresList({ adventures, updateLiked }) {
   return (
@@ -13,7 +13,7 @@ function AdventuresList({ adventures, updateLiked }) {
       <div className="list">
         {
           adventures.map((adv) => (
-            <Grid item xs={3} key={adv._id}>
+            <Grid item xs={3} key={adv.adventure_id}>
               {' '}
               <Adventure adventure={adv} updateLiked={updateLiked} />
               {' '}

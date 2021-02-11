@@ -1,10 +1,11 @@
+require('newrelic');
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const Adventures = require('../database/index.js');
+const cors = require('cors');
+const client = require('../database/pgConnect.js');
 
 const app = express();
-var cors = require('cors')
 
 const PORT = 8080;
 app.use(cors());
@@ -15,64 +16,86 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../public/')));
 
 app.get('/api/recommended', (req, res) => {
-  Adventures.find({})
-    .then((results) => {
-      res.status(200).send(results);
-    })
-    .catch((err) => {
+  client.query('SELECT * FROM adventures LIMIT 100', (err, response) => {
+    if (err) {
       res.status(400).send(err);
-    });
+    } else {
+      res.status(200).send(response.rows);
+    }
+  });
 });
 
 app.get('/api/recommended/:id', (req, res) => {
   const { id } = req.params;
-  Adventures.find({ _id: id })
-    .then((results) => {
-      res.status(200).send(results);
-    })
-    .catch((err) => {
+  client.query(`SELECT * FROM adventures WHERE adventure_id=${id}`, (err, response) => {
+    if (err) {
       res.status(400).send(err);
-    });
+    } else {
+      res.status(200).send(response.rows[0]);
+    }
+  });
 });
 
 app.get('/api/recommended/hello/:num', (req, res) => {
   const { num } = req.params;
-  const assigments = {
-    1: 'Recommended',
-    2: 'Outdoor Adventures',
-    3: 'Tours & Sightseeing',
-    4: 'Private & Custom Tours',
-    5: 'liked',
-  };
   if (num === '5') {
-    Adventures.find({ liked: true })
-      .then((results) => {
-        res.status(200).send(results);
-      })
-      .catch((err) => {
+    client.query('SELECT * FROM adventures WHERE liked=true LIMIT 10', (err, response) => {
+      if (err) {
         res.status(400).send(err);
-      });
+      } else {
+        res.status(200).send(response.rows);
+      }
+    });
   } else {
-    Adventures.find({ subcategory: assigments[num] })
-      .then((results) => {
-        res.status(200).send(results);
-      })
-      .catch((err) => {
-        res.status(400).send(err);
+    // may need to fix with join table query
+    if (num === '4') {
+      client.query('SELECT * FROM adventures WHERE subcategory=\'Private & Custom Tours\' LIMIT 10', (err, response) => {
+        if (err) {
+          res.status(400).send(err);
+        } else {
+          res.status(200).send(response.rows);
+        }
       });
+    }
+    if (num === '3') {
+      client.query('SELECT * FROM adventures WHERE subcategory=\'Tours & Sightseeing\' LIMIT 10', (err, response) => {
+        if (err) {
+          res.status(400).send(err);
+        } else {
+          res.status(200).send(response.rows);
+        }
+      });
+    }
+    if (num === '2') {
+      client.query('SELECT * FROM adventures WHERE subcategory=\'Outdoor Adventures\' LIMIT 10', (err, response) => {
+        if (err) {
+          res.status(400).send(err);
+        } else {
+          res.status(200).send(response.rows);
+        }
+      });
+    }
+    if (num === '1') {
+      client.query('SELECT * FROM adventures LIMIT 10', (err, response) => {
+        if (err) {
+          res.status(400).send(err);
+        } else {
+          res.status(200).send(response.rows);
+        }
+      });
+    }
   }
 });
 
 app.put('/api/recommended/:id', (req, res) => {
   const { id } = req.params;
-  const { liked } = req.body;
-  Adventures.findByIdAndUpdate(id, { liked: !liked }, { new: true, useFindAndModify: false })
-    .then((results) => {
-      res.status(200).send(results);
-    })
-    .catch((err) => {
+  client.query(`UPDATE adventures SET liked=not liked WHERE adventure_id=${id}`, (err, response) => {
+    if (err) {
       res.status(400).send(err);
-    });
+    } else {
+      res.status(200).send(response.rows);
+    }
+  });
 });
 
 app.listen(PORT, () => {
