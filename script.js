@@ -4,13 +4,16 @@ import { sleep } from 'k6';
 
 export const options = {
   stages: [
-    { duration: '10s', target: 1000 },
-    { duration: '10s', target: 1500 },
-    { duration: '10s', target: 2000 },
-    { duration: '10s', target: 2000 },
-    { duration: '10s', target: 1500 },
-    { duration: '10s', target: 1000 },
+    { duration: '3s', target: 1000 },
+    { duration: '3s', target: 1500 },
+    { duration: '3s', target: 2000 },
+    { duration: '3s', target: 2000 },
+    { duration: '3s', target: 1500 },
+    { duration: '3s', target: 1000 },
   ],
+  thresholds: {
+    http_req_duration: ['p(99) < 1000'],
+  },
   // scenarios: {
   //   constant_request_rate: {
   //     executor: 'constant-arrival-rate',
@@ -24,6 +27,6 @@ export const options = {
 };
 
 export default function () {
-  http.get(`http://localhost:8080/api/recommended/${Math.floor(Math.random() * 10000001)}`);
+  http.get(`http://18.219.52.50:8080/api/recommended/${Math.floor(Math.random() * 10000001)}`);
   sleep(1);
 }
